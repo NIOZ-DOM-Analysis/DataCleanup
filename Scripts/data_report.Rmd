@@ -1,0 +1,155 @@
+---
+title: "`r Project.name`"
+author: "`r Author`"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+header-includes:
+- \usepackage{pdflscape}
+- \newcommand{\blandscape}{\begin{landscape}}
+- \newcommand{\elandscape}{\end{landscape}}
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+- \usepackage{threeparttablex}
+- \usepackage[normalem]{ulem}
+- \usepackage{makecell}
+- \usepackage{xcolor}
+output: 
+  pdf_document:
+   
+   toc: true
+   toc_depth: 3
+
+  html_document:
+    theme: darkly
+    toc: true
+    toc_float: true
+    number_sections: false
+    fig_width: 7
+    fig_height: 5
+    fig_caption: true
+    fig_retina: 3
+---
+
+# Data analysis report
+## R
+The freely available software `r version$version.string` in combination with RStudio (version `r paste(analysis_info$Rstudio[1],analysis_info$Rstudio[2],analysis_info$Rstudio[3], sep = ".")`) was used. Installed packages are `r paste(package_list)`.
+
+## Raw data
+Mzmine detected `r analysis_info$total_nr_features` features in a total of `r analysis_info$total_nr_runs` runs. Analysis was done on `r analysis_info$nr_selected_runs` runs of which `r analysis_info$nr_selected_samples` were samples and `r analysis_info$nr_selected_blanks` blanks. Of those blanks, `r analysis_info$nr_selected_blank_method` `r if(analysis_info$nr_selected_blank_method == 1){"was a method blank"} else {"were method blanks"} ` and `r analysis_info$nr_selected_blank_instrument` `r if(analysis_info$nr_selected_blank_instrument == 1){"was an instrument blank"} else {"were instrument blanks"}` (extraction solvents).
+
+## Data clean up
+### Flagging of contaminants present in blank 
+Contaminents were `r analysis_info$flagging.method`. 
+By comparing the datasets before and after gapfiling, the peak area background noise level was set on `r background_noise`. Transient features are features that do not pass the background noise in at least `r W` samples. These transient features were removed.
+Feature peak areas were `r analysis_info$normalization`. For all statistical analysis on normalized peak areas, a dataset was use where all peak areas that were replaced by `r analysis_info$normalization_zeroes_replaced_by` + random number between 0 and 1  before the transformation.
+
+## GNPS
+GNPS annotated `r analysis_info$nr_library_hits` features as a known compound based on their MS2 spectra. Another `r analysis_info$nr_analog_hits - analysis_info$nr_library_hits` features were matched to highly similar MS2 spectra, so called Analog hits. These analog hits might provide structual information on the unknown compounds.
+
+```{r, echo=FALSE, results='asis'}
+if(exists("Delta")){
+cat('## Delta dataset \n 
+A Delta dataset was created by calculating the difference in raw peak areas between two timepoints; timepoint', analysis_info$delta_Tmin, " and ", analysis_info$delta_Tma,". To ensure proper alignment of the two datapoints, the datasets were sorted by ",analysis_info$delta_sorting1," and ",analysis_info$delta_sorting2,"."
+)}
+```
+
+
+```{r, echo=FALSE, results='asis'}
+if(exists("df.exudates")){
+  logformula<-"$\\log2(\\frac{ sample}{control})>$"
+  cat("## Exudates \n 
+  Exudates were determined in samples with Time_point = 0, and tested against ", analysis_info$exudate_test_group_control, " which served as the control sample.
+  A feature is determined as a exudate when in one of the tested samples has a ", analysis_info$exudate_fold_change," fold increase. This means that", logformula," ", analysis_info$exudate_minfactor,
+  ". Samples were classified by ", analysis_info$exudate_test_group, "."
+)}
+```
+
+```{r echo=FALSE}
+if(exists("df.exudates")){
+knitr::kable(
+  analysis_info$exudate_nr_groups, caption = 'Table 1: occurance of features per number of samples that passed the exudate feature threshold.', format = "pandoc", booktabs = T, full_width = F)
+}
+```
+
+```{r, echo=FALSE, results='asis'}
+if(exists("df.metabolized")){
+  cat("## Metabolized features \n
+### Metabolized feature finder \n
+Features that are metabolized over time were determined in multiple ways.
+First a selection was made using ", analysis_info$metabolized_finder_DS, " to see if there was a ", analysis_info$metabolized_fold_change," fold change of a feature between timepoint", analysis_info$metabolized_Tmin, " and timepoint ", analysis_info$metabolized_Tmax,". Therefore $\\log2(\\frac{Tmax}{Tmin})>$", analysis_info$metabolized_minfactor, " or ", "$\\log2(\\frac{Tmax}{Tmin})<-$", analysis_info$metabolized_minfactor,"  To ensure proper alignment of the samples, they were sorted by ", analysis_info$metabolized_sorting1, " and ", analysis_info$metabolized_sorting2, ". \n
+Features that passed this initial metabolized feature finder test, were used in further analysis ", analysis_info$metabolized_nr_of_features,".")
+}
+```
+
+```{r echo=FALSE}
+if(exists("df.metabolized")){
+  knitr::kable(
+  analysis_info$metabolized_nr_of_samples, caption = 'Table 2: occurance of features per number of samples that passed the metabolized feature threshold.', format = "pandoc", booktabs = T, full_width = F)
+}
+```
+
+```{r, echo=FALSE, results='asis'}
+if(exists("df.sign.metab")){
+cat("### Significant metabolized features \n
+We performed a t-test on the features that passed the fold change test. Therefore we used the ", analysis_info$normalization," dataset, selecting the ", analysis_info$metabolized_nr_of_features," features. We tested for the different ", analysis_info$metabolized_test_group, "( ", analysis_info$metabolized_test_group_levels, " ) over time between time point ", analysis_info$metabolized_Tmin, " and ", analysis_info$metabolized_Tmax,". ", analysis_info$nr_unique_sign_metabolized_features," features were significantly changed in at least one of the tested groups, and for all groups ", analysis_info$nr_sign_metabolized_features," features were significantly changed (thus one feature could significantly change in multiple groups).
+Within the groups the samples were sorted on ", analysis_info$metabolized_sorting3, " where the first one was used as the $\\mu$ and the mean and standard deviation of the other samples were compared against this $\\mu$ value
+")}
+```
+
+
+```{r, echo=FALSE, results='asis'}
+if(exists("dunnett_sig_FDR")){
+cat("### Anova and dunnett \n
+We performed an ANOVA on the ", analysis_info$anova_dunnett_DS,". The ANOVA was peformed to compare for differences between the groups within ", analysis_info$anova_dunnett_test_group,". This resulted in ", analysis_info$anova_significant_features, ",  after adjusting for false discovery. A Dunnetts test was peformed on the features that were significantly different between groups based on the ANOVA test. ", unlist(analysis_info$dunnet_levels)," groups were used and the ", analysis_info$dunnett_compair_to," group was used to compare to. This resulted in ", analysis_info$nr_sign_dunnett, " features being significantly different in one of the groups compared to ", analysis_info$dunnett_compair_to,"."
+)}
+```
+
+```{r, echo=FALSE, results='asis'}
+if(exists("modifications")){
+cat("## Detect Mass modifications in network \n
+### Mined mass changes \n
+The network created with GNPS was analyzed and ", analysis_info$total_nr_edges, " edges (connecting two nodes or features) were detected. These detected edges consisted of ", analysis_info$nr_unique_deltaMZ, " unique mass differences. Of these ", analysis_info$nr_unique_deltaMZ," mass differences, ", analysis_info$nr_deltaMZ_pass," occured more than ", analysis_info$MZpass," times. ", analysis_info$nr_direct_bins," could directly be a representative of a bin. ", analysis_info$nr_check_modifications," mass differences were close ($\\Delta m/z$ +/-0.004) to eachother and therefore the representative of the bin was selected by hand based on the number of occurences. This resulted in ", analysis_info$nr_selected_modifications," bins having a standard binwidth of $\\Delta m/z$ 0.002 and ", analysis_info$nr_selected_mod_wider_bin," bins with a wider binwidth of $\\Delta m/z$ 0.004. This resulted in ", analysis_info$nr_selected_deltaMZ_asBIN," bins, consisting of ", analysis_info$nr_selected_nodes," different edges/node pairs.")}
+```
+
+```{r, echo=FALSE, results='asis'}
+if(exists("modifications_CHEMDIR_change_bininfo")){
+ cat(" 
+### CHEMDIR \n
+Using the node pairs assigned to a bin, and ", analysis_info$CHEMDIR_DS," it was checked if both nodes were present in both time points. If all four values are present, then they were assigned a number based on the following rules:
+
+1: at T0 node 1 is bigger then node 2, and at T end node 2 is increased and node 1 decreased. Delta MZ is bigger than 0, node 1 is heavier.  So over time node 1 changes into node 2. so removal.
+
+2: at T0 node 1 is bigger then node 2, and at T end node 2 is increased and node 1 decreased. Delta MZ is smaller than 0, node 2 is heavier.  So over time node 1 changes into node 2. so addition.
+
+3: at T0 node 2 is bigger then node 1, and at T end node 1 is increased and node 2 decreased. Delta MZ is bigger then 0, node 1 is heavier. so over time node 2 changes into node 1. so addition
+
+4: at T0 node 2 is bigger then node 1, and at T end node 1 is increased and node 2 decreased. Delta MZ is smaller then 0, node 2 is heavier. so over time node 2 changes into node 1. so removal
+
+if non of the upper things apply  then NA.
+
+If the node pair $\\Delta m/z$ was positive, the CHEMDIR was calculated as $log(\\frac{(\\frac{node1.T0[i,j]+k}{node2.T0[i,j]+k})}{ (\\frac{node1.Tend[i,j]+k}{node2.Tend[i,j]+k} )})$. When the $\\Delta m/z$ was negative, the CHEMDIR was calculated as $log(\\frac{(\\frac{node2.T0[i,j]+k}{node1.T0[i,j]+k})}{ (\\frac{node2.Tend[i,j]+k}{node1.Tend[i,j]+k} )})$.
+This comes down to: $log(\\frac{(\\frac{LightT_{0}+k}{HeavyT_{0}+k})}{ (\\frac{LightT_{end}+k}{HeavyT_{end}+k} )})$.
+We applied two ways of adding a weight to the mass modifications. One by the smallest change of one peak area over time, the other way was the smallest factor for instance: $\\frac{node1.T_{0}+k}{node1.T_{end}+k}$ depending which node was more abundant. This resulted in both cases to ", analysis_info$modifications_CHEMDIR_factor_present," node pairs with a MeMSCHEM/CHEMDIR change in at least one sample.
+
+When only using only MeMSCHEM to determine modifications over time, we find ", analysis_info$modifications_present_MEMSCHEM_only," modifications. When only using CHEMDIR, ", analysis_info$nr_modifications_CHEMDIR_only," feature pairs would pass the threshold of being considered a modification over time.")
+}
+```
+
+\newpage
+\blandscape
+
+```{r echo=FALSE}
+knitr::kable(
+  full_metadata, caption = 'Metadata.', format = "latex", booktabs = T)%>%
+kable_styling(latex_options = c("striped", "scale_down", "repeat_header"))
+
+```
+
+\elandscape
