@@ -53,7 +53,11 @@ package_list <- c(
   "rstatix",
   "ComplexUpset",
   "cowplot",
-  "scatterplot3d")                                        
+  "scatterplot3d",
+  "pdftools",
+  "png",
+  "magick",
+  "devtools")
 
 
 
