@@ -1,12 +1,12 @@
 'flagging_average_all_samples.R
 
 •	Remove samples that you dont want in your clean up steps,
-like samples you dont care to look at. This would be the situation 
+like samples you dont care to look at. This would be the situation
 where you run someones samples in your run but dont want their blanks or dumb features
 
 •	Background features are identified and removed from all samples
-if the peak area in any of the blanks exceeds 50% of the 
-mean peak area across all samples. 
+if the peak area in any of the blanks exceeds 50% of the
+mean peak area across all samples.
 
 
 Written by:
@@ -22,7 +22,7 @@ List of alterations:
 if(exists("samples2delete")){
   if(is.na(samples2delete)){
   df1<- df1 %>% dplyr::filter(!is.na(Injection_type))
-}} 
+}}
 analysis_info$flagging.method<-"flagged and removed if $max(blanks) >= mean(peak area)*0.5$, thus over all samples"
 
 #devide the dataset in blanks and samples
@@ -44,10 +44,10 @@ samples.name<-samples.name$`unlist(samples[1, ])`
 colnames(blanks)<- blanks.name
 colnames(samples)<-samples.name
 
-blanks<-blanks[4:nrow(blanks),]
-samples<-samples[4:nrow(samples),]
+blanks<-dplyr::slice(blanks, 4:nrow(blanks))
+samples<-dplyr::slice(samples, 4:nrow(samples))
 setwd(dirWrite)
-write.csv(blanks,"blanks.csv",row.names = TRUE) 
+write.csv(blanks,"blanks.csv",row.names = TRUE)
 write.csv(samples,"samples.csv",row.names = TRUE)
 
 rm(blanks)
@@ -64,8 +64,8 @@ samples<-read.csv("samples.csv", sep=",", header = TRUE, row.names = 1, check.na
 blanks$max_blanks <- apply(blanks, 1, max)
 samples$mean_samples <- apply (samples, 1, mean)
 
-max_blanks<-subset(blanks, select = "max_blanks")
-mean_samples<-subset(samples, select = "mean_samples")
+max_blanks<-dplyr::select(blanks, select = "max_blanks") %>% dplyr::rename("max_blanks" = "select")
+mean_samples<-dplyr::select(samples, select = "mean_samples") %>% dplyr::rename("mean_samples" = "select")
 flagging<-cbind(max_blanks, mean_samples)
 
 rm(max_blanks)
@@ -89,7 +89,7 @@ df1.filtered<- df1 %>% dplyr::select("File Name", one_of(notflagged))
 df1.filtered<-tibble::column_to_rownames(df1.filtered, 'File Name')
 df1.filtered<-as.data.frame(t(df1.filtered))
 setwd(dirOutput)
-write.csv(df1.filtered,"rawpeaks_no-background.csv",row.names = TRUE) 
+write.csv(df1.filtered,"rawpeaks_no-background.csv",row.names = TRUE)
 
 #save again some info in the analysis info
 analysis_info$nr_selected_samples<-sum(df1$Injection_type == "Sample")
