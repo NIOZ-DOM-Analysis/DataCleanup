@@ -105,6 +105,7 @@ if (exists("SIRIUS")) {
 temp <- as.character(colnames(rawpeakareas)) #move first row to temp
 tmp <-  as.data.frame(matrix(ncol = ncol(rawpeakareas), nrow = 1))#make dataframe to store colnames in
 tmp[1, ] <- sub(".mzXML Peak area", "", temp)  #change temp by removing .mzXML.Peak area in insert in rawpeakareas
+tmp[1, ] <- sub(".mzML Peak area", "", tmp)  #change temp by removing .mzML.Peak area in insert in rawpeakareas
 
 colnames(rawpeakareas) <- tmp[1, ]
 
@@ -147,13 +148,13 @@ rawpeakareas <- dplyr::rename(rawpeakareas, "feature_nr" = "row ID")
 
 ##  Do the same with the pregapfilled file
 # remove the .mzXML.Peak.area string from the filenames
-# remove the .mzXML.Peak.area string from the filenames
+# remove the .mzML.Peak.area string from the filenames
 temp <-
   as.character(colnames(PREgapfilled)) #move column headers to temp
 tmp <-
   as.data.frame(matrix(ncol = ncol(PREgapfilled), nrow = 1))#make dataframe to store colnames in
-tmp[1, ] <-
-  sub(".mzXML Peak area", "", temp)  #change temp by removing .mzXML.Peak area in insert in rawpeakareas
+tmp[1, ] <- sub(".mzXML Peak area", "", temp)  #change temp by removing .mzXML.Peak area in insert in rawpeakareas
+tmp[1, ] <- sub(".mzML Peak area", "", tmp)  #change temp by removing .mzML.Peak area in insert in rawpeakareas
 
 colnames(PREgapfilled) <- tmp[1, ]
 
@@ -223,13 +224,13 @@ colnames(analogs_hits)[tmp] <- "Analog_LibraryID"
 if (exists("derep_hits")) {
   tmp <- which(colnames(derep_hits) == "Scan")
   colnames(derep_hits)[tmp] <- "feature_nr"
-  
+
 }
 
 if (exists("derep_plus_hits")) {
   tmp <- which(colnames(derep_plus_hits) == "Scan")
   colnames(derep_plus_hits)[tmp] <- "feature_nr"
-  
+
 }
 
 if (exists("ClassyFire_hits")) {
@@ -465,4 +466,4 @@ df1.pregap <-
 write.csv(df1.pregap, "pregapfilling.csv", row.names = TRUE) #write third version of data, not cleaned
 
 if (exists("sirius_files")) {
-rm(sirius_files)} 
+rm(sirius_files)}
