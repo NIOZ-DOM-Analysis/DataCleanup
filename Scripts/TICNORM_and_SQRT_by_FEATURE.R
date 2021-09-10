@@ -9,6 +9,7 @@ Milou Arts, NIOZ, NL, 2019
 List of alterations:
 
 '
+wd.project<-getwd()
 analysis_info$normalization_feature<-"relativized by the total ion current of each feature followed by asin(sqrt(x)) normalization."
 setwd(dirOutput)
 
@@ -33,7 +34,7 @@ TICNORM.ft<-sapply(df2.filtered, FUNTIC)
 TICNORM.ft<-as.data.frame(TICNORM.ft)
 rownames(TICNORM.ft)<-rownames(df2.filtered)
 TICNORM.ft<-TICNORM.ft[,1:(ncol(TICNORM.ft)-1)]
-setwd(dirOutput)
+
 write.csv(TICNORM.ft,"TICNORM.ft.csv",row.names = TRUE) 
 
 
@@ -61,9 +62,9 @@ if (!exists("full_metadata")){
 
 df.norm.ft<-dplyr::right_join(full_metadata, df.norm.ft, by = "File Name")
 df.norm.ft<-if_na(df.norm.ft, "not applicable")
-setwd(dirOutput)
+
 write.csv(df.norm.ft,"df.norm.ft.csv",row.names = FALSE) 
 
 rm(df2.filtered)
-
+setwd(wd.project)
 

@@ -12,6 +12,7 @@ List of alterations:
 
 
 '
+wd.project<-getwd()
 setwd(dirOutput)
 #read in the file of the rawpeaks that had the background features removed
 df.trans<-read.csv('df1.filtered_noblanks.csv', header = TRUE, row.names = 1)
@@ -36,7 +37,7 @@ df.filtered<-dplyr::select(df.filtered, -V1)
 df.trans<-column_to_rownames(df.trans, 'feature')
 df.filtered<-column_to_rownames(df.filtered, 'feature')
 
-setwd(dirOutput)
+
 write.csv(df.trans,"transient.feat_filtered_out.csv",row.names = TRUE) 
 write.csv(df.filtered,"rawpeaks_no-background_no-transientfeat.csv",row.names = TRUE) 
 
@@ -56,6 +57,8 @@ if (!exists("full_metadata")){
   full_metadata<-dplyr::left_join(orbitrapsequence, metadata, by = "Sample Name")}
 df.area<-dplyr::right_join(full_metadata, df.area, by = "File Name")
 df.area<-if_na(df.area, "not applicable")
-setwd(dirOutput)
+
 write.csv(df.area,"df.area.csv",row.names = FALSE) 
 write.csv(df.area.no.meta,"df.area_no.metadata.csv",row.names = FALSE) 
+
+setwd(wd.project)

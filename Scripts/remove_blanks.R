@@ -1,6 +1,6 @@
 'remove_blanks.R
 
-•	Remove blanks before normalisation.
+	Remove blanks before normalisation.
 
 
 Written by:
@@ -20,8 +20,9 @@ sample_files<-sample_files$`File Name`
 options(warn=-1)
 df1.filtered_noblanks<-dplyr::select(df1.filtered_noblanks, one_of(sample_files))
 options(warn=0)
+wd.project<-getwd()
 setwd(dirOutput)
 write.csv(df1.filtered_noblanks,"df1.filtered_noblanks.csv",row.names = TRUE)
-
+setwd(wd.project)
 
 

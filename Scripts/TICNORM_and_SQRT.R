@@ -9,6 +9,7 @@ Milou Arts, NIOZ, NL, 2019
 List of alterations:
 
 '
+wd.project <- getwd()
 analysis_info$normalization<-"relativized by the total ion current of each sample followed by $asin(sqrt(x))$ normalization."
 setwd(dirOutput)
 df1.trans.feat<-df.filtered #create backup of your data, although this should be the same as "rawpeaks_no-background_no-transientfeat.csv"
@@ -30,7 +31,7 @@ TICNORM.smpl<-sapply(df.filtered, FUNTIC)
 TICNORM.smpl<-as.data.frame(TICNORM.smpl)
 rownames(TICNORM.smpl)<-rownames(df.filtered)
 TICNORM.smpl<-TICNORM.smpl[,1:(ncol(TICNORM.smpl)-1)]
-setwd(dirOutput)
+
 write.csv(TICNORM.smpl,"TICNORM.smpl.csv",row.names = TRUE) 
 
 #create function to transform data by asin of sqare root of the normalized data.
@@ -56,10 +57,10 @@ if (!exists("full_metadata")){
   full_metadata<-dplyr::left_join(orbitrapsequence, metadata, by = "Sample Name")}
 df.norm.smpl<-dplyr::right_join(full_metadata, df.norm.smpl, by = "File Name")
 df.norm.smpl<-if_na(df.norm.smpl, "not applicable")
-setwd(dirOutput)
+
 write.csv(df.norm.smpl,"df.norm.smpl.csv",row.names = FALSE) 
 
 #number of metadata columns
 M<-ncol(full_metadata)+1
 
-
+setwd(wd.project)
