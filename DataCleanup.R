@@ -6,10 +6,10 @@
 networking.type <- "IIN"
 #Did you run MolNetEnhancer
 MolNetEnh <- "YES"
-#Did you run Dereplicator?
-Dereplicator <- "YES"
+#Did you run Dereplicator separately?
+Dereplicator <- "NO"
 #Did you run Dereplicator+?
-Dereplicator_plus <- "YES"
+Dereplicator_plus <- "NO"
 
 # #if you want to update your R, R studio you have to do by hand.
 # source(paste0(Data.cleanup.scripts, '/updateR.R'))
@@ -95,7 +95,7 @@ print(head(split_pregap))
 #now set the background noise based on the pregap value in the first row
 #(this is the first value that is not 0) before gapfilling.
 
-background_noise <- 395600
+background_noise <- 372460
 
 #of how many samples does the smallest group consist?
 W<-2 #this will be the minimum for transient_feature removal
@@ -109,7 +109,7 @@ toc()
 
 #normalize by TIC and transform sqrt by sample
 #tic()
-#source(paste0(Data.cleanup.scripts,'/TICNORM_and_SQRT.R'))
+source(paste0(Data.cleanup.scripts,'/TICNORM_and_SQRT.R'))
 #toc()
 
 #normalize by TIC and transform sqrt by feature
