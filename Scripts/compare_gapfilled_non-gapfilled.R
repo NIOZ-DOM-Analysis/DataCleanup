@@ -13,7 +13,7 @@ List of alterations:
 '
 df2 <- (df1)
 df2 <- column_to_rownames(df2, var = "File Name")
-df2 <- dplyr::select(df2,-c('Sample Name', 'Injection_type'))
+df2 <- dplyr::select(df2,-c('Sample Name', 'Injection_Type'))
 df2.long <-
   df2 %>% pivot_longer(cols = everything(),
                        names_to = "featurecode",
@@ -26,7 +26,7 @@ df2.long <- rowid_to_column(df2.long, var = 'X1')
 
 df2.pregap<-(df1.pregap)
 df2.pregap<-column_to_rownames(df2.pregap, var = "File Name")
-df2.pregap<-dplyr::select(df2.pregap, -c('Sample Name', 'Injection_type'))
+df2.pregap<-dplyr::select(df2.pregap, -c('Sample Name', 'Injection_Type'))
 df2.pregap.long<-df2.pregap%>%pivot_longer( cols= everything(),names_to = "featurecode", values_to = "relativeabundance")
 write.csv(df2.pregap.long, 'df2pregaplong.csv', row.names = FALSE)
 df2.pregap.long<-read_csv('df2pregaplong.csv')
@@ -39,7 +39,6 @@ pregapplot<-dplyr::select(pregapplot, relativeabundance.x, relativeabundance.y)
 colnames(pregapplot)<-c("gapfilled", "pregap")
 pregapplot<-cbind(feat.order, pregapplot)
 pregap_gap<-pregapplot
-pregapplot<-pivot_longer(pregapplot, names_to = "dataset", values_to = "rel_abundance", gapfilled:pregap)
 
 split_gapfilled<-dplyr::select(pregap_gap, -pregap)
 split_pregap<-dplyr::select(pregap_gap, -gapfilled)

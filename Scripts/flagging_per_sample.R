@@ -1,12 +1,12 @@
 'flagging_per_sample.R
 
 •	Remove samples that you dont want in your clean up steps,
-like samples you dont care to look at. This would be the situation 
+like samples you dont care to look at. This would be the situation
 where you run someones samples in your run but dont want their blanks or dumb features
 
 •	Background features are identified and removed from all samples
 if the peak area in any of the blanks is bigger then the area in the sample
- peak area in a sample. 
+ peak area in a sample.
 
 
 Written by:
@@ -26,9 +26,9 @@ df1<- dplyr::filter(df1, !Sample_Name %like any% samples2delete)
 analysis_info$flagging.method<-"flagged and removed if $max(blank) > peak area$, otherwise $peak area - max(blank)$"
 
 #devide the dataset in blanks and samples
-InjectionType<-as.factor(df1$Injection_type)
-blanks<-subset(df1, df1$Injection_type!= "Sample")
-samples<-subset(df1, df1$Injection_type == "Sample")
+InjectionType<-as.factor(df1$Injection_Type)
+blanks<-subset(df1, df1$Injection_Type!= "Sample")
+samples<-subset(df1, df1$Injection_Type == "Sample")
 blanks<-as.data.frame(t(blanks))
 samples<-as.data.frame(t(samples))
 
@@ -48,7 +48,7 @@ colnames(samples)<-samples.name
 blanks<-blanks[4:nrow(blanks),]
 samples<-samples[4:nrow(samples),]
 setwd(dirWrite)
-write.csv(blanks,"blanks.csv",row.names = TRUE) 
+write.csv(blanks,"blanks.csv",row.names = TRUE)
 write.csv(samples,"samples.csv",row.names = TRUE)
 
 rm(blanks)
@@ -96,13 +96,13 @@ flagged<-dplyr::select(flagged, -sum)
 flagged<-tibble::column_to_rownames(flagged, 'feature')
 
 setwd(dirOutput)
-write.csv(df1.filtered,"rawpeaks_no-background.csv",row.names = TRUE) 
+write.csv(df1.filtered,"rawpeaks_no-background.csv",row.names = TRUE)
 
 
 #save again some info in the analysis info
-analysis_info$nr_selected_samples<-sum(df1$Injection_type == "Sample")
-analysis_info$nr_selected_blanks<-sum(df1$Injection_type != "Sample")
-analysis_info$nr_selected_blank_method<-sum(df1$Injection_type == "Blank_method")
-analysis_info$nr_selected_blank_instrument<-sum(df1$Injection_type == "Blank_instrument")
+analysis_info$nr_selected_samples<-sum(df1$Injection_Type == "Sample")
+analysis_info$nr_selected_blanks<-sum(df1$Injection_Type != "Sample")
+analysis_info$nr_selected_blank_method<-sum(df1$Injection_Type == "Blank_method")
+analysis_info$nr_selected_blank_instrument<-sum(df1$Injection_Type == "Blank_instrument")
 analysis_info$nr_flagging_pass<-nr.notflagged
 analysis_info$nr_flagging_remove<-nr.flagged

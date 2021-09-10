@@ -21,14 +21,14 @@ List of alterations:
 #don't understand why this not works
 if(exists("samples2delete")){
   if(is.na(samples2delete)){
-  df1<- df1 %>% dplyr::filter(!is.na(Injection_type))
+  df1<- df1 %>% dplyr::filter(!is.na(Injection_Type))
 }}
 analysis_info$flagging.method<-"flagged and removed if $max(blanks) >= mean(peak area)*0.5$, thus over all samples"
 
 #devide the dataset in blanks and samples
-InjectionType<-as.factor(df1$Injection_type)
-blanks<-subset(df1, df1$Injection_type!= "Sample")
-samples<-subset(df1, df1$Injection_type == "Sample")
+InjectionType<-as.factor(df1$Injection_Type)
+blanks<-subset(df1, df1$Injection_Type!= "Sample")
+samples<-subset(df1, df1$Injection_Type == "Sample")
 blanks<-as.data.frame(t(blanks))
 samples<-as.data.frame(t(samples))
 
@@ -92,10 +92,10 @@ setwd(dirOutput)
 write.csv(df1.filtered,"rawpeaks_no-background.csv",row.names = TRUE)
 
 #save again some info in the analysis info
-analysis_info$nr_selected_samples<-sum(df1$Injection_type == "Sample")
-analysis_info$nr_selected_blanks<-sum(df1$Injection_type != "Sample")
-analysis_info$nr_selected_blank_method<-sum(df1$Injection_type == "Blank_method")
-analysis_info$nr_selected_blank_instrument<-sum(df1$Injection_type == "Blank_instrument")
+analysis_info$nr_selected_samples<-sum(df1$Injection_Type == "Sample")
+analysis_info$nr_selected_blanks<-sum(df1$Injection_Type != "Sample")
+analysis_info$nr_selected_blank_method<-sum(df1$Injection_Type == "Blank_method")
+analysis_info$nr_selected_blank_instrument<-sum(df1$Injection_Type == "Blank_instrument")
 analysis_info$nr_flagging_pass<-length(notflagged)
 analysis_info$nr_flagging_remove<-nrow(flagged)
 

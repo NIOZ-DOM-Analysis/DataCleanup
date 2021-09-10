@@ -12,7 +12,7 @@ List of alterations:
 analysis_info<-list(total_nr_features<-nrow(rawpeakareas))
 names(analysis_info)<-"total_nr_features"
 analysis_info$total_nr_runs<-ncol(rawpeakareas)-4
-analysis_info$nr_selected_runs<-sum(!is.na(df1$Injection_type))
+analysis_info$nr_selected_runs<-sum(!is.na(df1$Injection_Type))
 analysis_info$nr_analog_hits<-nrow(analogs_hits)
 analysis_info$nr_library_hits<-nrow(library_hits)
 analysis_info$Rstudio<-unlist(RStudio.Version()[3])
