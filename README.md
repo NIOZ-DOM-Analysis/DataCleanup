@@ -4,7 +4,7 @@ Take MZmine output and perform blank removal, transient feature removal, and nor
 The RAW folder needs to contain:
 
 orbitrapsequence.csv
-_Has 3 columns with the names: "File Name", "Sample Name", "Injection_Type"
+_Has 3 columns with the names: "File Name", "Sample Name", "Injection_Type"_
 
 metadata.csv
 _Has at least the columns: "Sample Name" (matching orbitrap sequence)_
