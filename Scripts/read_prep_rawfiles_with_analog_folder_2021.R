@@ -10,6 +10,7 @@ List of alterations:
 
 '
 ##### load files from folders ####
+wd.project<-getwd()
 setwd(dirRAW) # set wd to raw folder to read in files
 
 orbitrapsequence <- read_csv("orbitrapsequence.csv")
