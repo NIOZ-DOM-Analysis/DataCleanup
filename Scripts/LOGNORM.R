@@ -9,7 +9,7 @@ Milou Arts, NIOZ, NL, 2019
 List of alterations:
 
 '
-
+wd.project<-getwd()
 setwd(dirOutput)
 
 #create backup of your data, although this should be the same as "rawpeaks_no-background_no-transientfeat.csv"
@@ -36,7 +36,7 @@ LOGNORM<-sapply(df.filtered, FUNLOG)
 #change to data frame and add rownames etc.
 LOGNORM<-as.data.frame(LOGNORM)
 rownames(LOGNORM)<-rownames(df.filtered)
-setwd(dirOutput)
+
 write.csv(LOGNORM,"LOGNORM_raw.csv",row.names = TRUE)
 
 #replace the 0s with the number you want. - i couldve done this before log transformation. but now i also have a raw version)
@@ -60,8 +60,10 @@ if (!exists("full_metadata")){
   full_metadata<-dplyr::left_join(orbitrapsequence, metadata, by = "Sample Name")}
 df.norm.area<-dplyr::right_join(full_metadata, df.norm.area, by = "File Name")
 df.norm.area<-if_na(df.norm.area, "not applicable")
-setwd(dirOutput)
+
 write.csv(df.norm.area,"df.norm.area.csv",row.names = FALSE)
 
 #number of metadata columns
 M<-ncol(full_metadata)+1
+
+setwd(wd.project)

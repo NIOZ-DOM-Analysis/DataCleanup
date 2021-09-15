@@ -18,6 +18,7 @@ rawpeakareas <- read_csv("POSTgapfilled.csv")
 PREgapfilled <- read_csv("PREgapfilled.csv")
 metadata <- read_csv("metadata.csv")
 
+setwd(wd.project)
 # load in files from Cytoscape based on the type of networking
 if (networking.type == "FBMN") {
   dir_library_hits <- paste0(dir_analogs_on, '\\DB_result')
@@ -60,26 +61,32 @@ if (Dereplicator_plus == "YES") {
   setwd(dir_derepplus)
   temp <- list.files(pattern = "*.tsv")
   derep_plus_hits <- read_tsv(temp)
+  setwd(wd.project)
 }
 
 setwd(dir_node_info)
 temp <- list.files(pattern = "*.tsv")
 node_info <- read_tsv(temp)
+setwd(wd.project)
 
 setwd(dir_library_hits)
 temp <- list.files(pattern = "*.tsv")
 library_hits <- read_tsv(temp)
+setwd(wd.project)
 
 setwd(dir_analogs_hits)
 temp <- list.files(pattern = "*.tsv")
 analogs_hits <- read_tsv(temp, col_types = cols(tags = col_character()))
 analogs_hits <- read_tsv(temp)
+setwd(wd.project)
 
 if (Dereplicator == "YES"){
   setwd(dir_derep)
   temp <- list.files(pattern = "*.tsv")
-  derep_hits <- read_tsv(temp)}
+  derep_hits <- read_tsv(temp)
+  setwd(wd.project)}
 
+setwd(wd.project)
 setwd(dirRAW) #set wd to raw folder to read in files
 
 
@@ -98,6 +105,7 @@ if (exists("SIRIUS")) {
   write_csv(SIRIUS, "SIRIUS.csv")
 }
 
+setwd(wd.project)
 
 ####PREP FILES####
 ##### MZmine OUTPUT####
@@ -340,8 +348,10 @@ if (exists("SIRIUS")) {
 
 feature_info$feature_nr <- as.character(feature_info$feature_nr)
 
+# setwd(wd.project)
 # setwd(dirOutput)
 # write.csv(feature_info,"feature_info.csv", row.names = FALSE) #write all feature info availible
+# setwd(wd.project)
 
 ###### Make feature ID #####
 # we first make a dataframe with all the columns that we want to use.
@@ -405,9 +415,10 @@ featureID_info <- cbind(featureID, df.featureID)
 df.featureID <- featureID_info
 featureID_info <-
   join(featureID_info, feature_info, by = "feature_nr", type = "left")
+setwd(wd.project)
 setwd(dirOutput)
 write.csv(featureID_info, "feature_info_final.csv", row.names = FALSE) #write all feature info availible
-
+setwd(wd.project)
 
 # make a new df with combined names
 df <- cbind(featureID, rawpeakareas[, 5:ncol(rawpeakareas)])
@@ -415,7 +426,8 @@ df <- t(df)
 df <- as.data.frame(df)
 
 # let's make a safe file for in between
-setwd(dirOutput) #set wd to output
+# setwd(dirOutput) #set wd to output
+# setwd(wd.project)
 # write.csv(df,"rawpeakareas_V1.csv",row.names = TRUE) #write first version of data, not cleaned
 
 # we name the columns and the rows by naming columns and transposing
@@ -431,8 +443,10 @@ colnames(shared.name) <- 'File Name'
 df <- cbind(shared.name, df)
 df1 <-
   right_join(orbitrapsequence, df, by = "File Name") #join matching info from orbitrap sequence
-
+setwd(wd.project)
+setwd(dirOutput)
 write.csv(df1, "rawpeakareas.csv", row.names = TRUE) #write third version of data, not cleaned
+setwd(wd.project)
 
 ###### PREGAPFILLED combined with metadata etc.
 
@@ -447,7 +461,7 @@ df.pregap <- t(df.pregap)
 df.pregap <- as.data.frame(df.pregap)
 
 # let's make a safe file for in between
-setwd(dirOutput) #set wd to output
+# setwd(dirOutput) #set wd to output
 # write.csv(df.pregap,"pregapfilling_V1.csv",row.names = TRUE) #write first version of data, not cleaned
 
 # we name the columns and the rows by naming columns and transposing
@@ -463,8 +477,10 @@ colnames(shared.name) <- 'File Name'
 df.pregap <- cbind(shared.name, df.pregap)
 df1.pregap <-
   right_join(orbitrapsequence, df.pregap, by = "File Name") #join matching info from orbitrap sequence
-
+setwd(wd.project)
+setwd(dirOutput)
 write.csv(df1.pregap, "pregapfilling.csv", row.names = TRUE) #write third version of data, not cleaned
+setwd(wd.project)
 
 if (exists("sirius_files")) {
 rm(sirius_files)}

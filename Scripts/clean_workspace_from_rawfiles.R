@@ -27,6 +27,6 @@ rm(df1.pregap)
 rm(shared.name)
 
 rm(df, df.pregap, feat.order, feature_info, featureID)
-setwd(dirOutput)
+
 
 

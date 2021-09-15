@@ -17,6 +17,7 @@ List of alterations:
 
 
 '
+wd.project<-getwd()
 #define the samples you want to delete in the main file
 #don't understand why this not works
 if(exists("samples2delete")){
@@ -46,6 +47,7 @@ colnames(samples)<-samples.name
 
 blanks<-dplyr::slice(blanks, 4:nrow(blanks))
 samples<-dplyr::slice(samples, 4:nrow(samples))
+setwd(wd.project)
 setwd(dirWrite)
 write.csv(blanks,"blanks.csv",row.names = TRUE)
 write.csv(samples,"samples.csv",row.names = TRUE)
@@ -56,6 +58,7 @@ rm(samples)
 blanks<-read.csv("blanks.csv", sep=",", header = TRUE, row.names = 1, check.names = TRUE, stringsAsFactors=FALSE)
 samples<-read.csv("samples.csv", sep=",", header = TRUE, row.names = 1, check.names = TRUE, stringsAsFactors=FALSE)
 
+setwd(wd.project)
 
 ## flagging background features and subtraction from samples ------------------------------------------------
 # The idea here is to flag and remove features where max(blanks) >= mean(samples)*0.5
@@ -88,8 +91,10 @@ df1.filtered<- df1 %>% dplyr::select("File Name", one_of(notflagged))
 
 df1.filtered<-tibble::column_to_rownames(df1.filtered, 'File Name')
 df1.filtered<-as.data.frame(t(df1.filtered))
+setwd(wd.project)
 setwd(dirOutput)
 write.csv(df1.filtered,"rawpeaks_no-background.csv",row.names = TRUE)
+setwd(wd.project)
 
 #save again some info in the analysis info
 analysis_info$nr_selected_samples<-sum(df1$Injection_Type == "Sample")
