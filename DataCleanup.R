@@ -7,9 +7,9 @@ networking.type <- "IIN"
 #Did you run MolNetEnhancer
 MolNetEnh <- "YES"
 #Did you run Dereplicator separately?
-Dereplicator <- "NO"
+Dereplicator <- "YES"
 #Did you run Dereplicator+?
-Dereplicator_plus <- "NO"
+Dereplicator_plus <- "YES"
 
 # #if you want to update your R, R studio you have to do by hand.
 # source(paste0(Data.cleanup.scripts, '/updateR.R'))
