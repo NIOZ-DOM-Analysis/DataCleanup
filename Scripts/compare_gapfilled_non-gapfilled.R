@@ -43,13 +43,14 @@ pregap_gap<-pregapplot
 split_gapfilled<-dplyr::select(pregap_gap, -pregap)
 split_pregap<-dplyr::select(pregap_gap, -gapfilled)
 
+setwd(wd.project)
 setwd(dirFigs)
 
 split_pregap<-dplyr::filter(split_pregap, pregap > 0)
 
 #head(split_pregap)
 
-setwd(dirOutput)
+setwd(wd.project)
 #######
 
 rm(df2, df2.long, df2.pregap, df2.pregap.long)
