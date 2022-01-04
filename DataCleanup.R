@@ -77,7 +77,7 @@ toc()
 
 #option 2: clean based on area in all samples separate - time series
 #tic()
-#source('C:/Users/Milou/Documents/R/Rscripts/flagging_per_sample.R')
+#source(paste0(Data.cleanup.scripts,'/flagging_per_sample.R')
 #toc()
 
 #remove blanks
