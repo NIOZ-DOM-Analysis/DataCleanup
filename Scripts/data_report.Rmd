@@ -39,7 +39,7 @@ output:
 
 # Data analysis report
 ## R
-The freely available software `r version$version.string` in combination with RStudio (version `r paste(analysis_info$Rstudio[1],analysis_info$Rstudio[2],analysis_info$Rstudio[3], sep = ".")`) was used. Installed packages are `r paste(package_list)`.
+The freely available software `r R.version$version.string` in combination with RStudio (version `r paste(analysis_info$Rstudio[1],analysis_info$Rstudio[2],analysis_info$Rstudio[3], sep = ".")`) was used. Installed packages are `r paste(package_list)`.
 
 ## Raw data
 Mzmine detected `r analysis_info$total_nr_features` features in a total of `r analysis_info$total_nr_runs` runs. Analysis was done on `r analysis_info$nr_selected_runs` runs of which `r analysis_info$nr_selected_samples` were samples and `r analysis_info$nr_selected_blanks` blanks. Of those blanks, `r analysis_info$nr_selected_blank_method` `r if(analysis_info$nr_selected_blank_method == 1){"was a method blank"} else {"were method blanks"} ` and `r analysis_info$nr_selected_blank_instrument` `r if(analysis_info$nr_selected_blank_instrument == 1){"was an instrument blank"} else {"were instrument blanks"}` (extraction solvents).
