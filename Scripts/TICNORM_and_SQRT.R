@@ -14,6 +14,7 @@ analysis_info$normalization<-"relativized by the total ion current of each sampl
 setwd(dirOutput)
 df1.trans.feat<-df.filtered #create backup of your data, although this should be the same as "rawpeaks_no-background_no-transientfeat.csv"
 df.filtered<-as.data.frame(t(df.filtered))
+df.filtered<-as.data.frame(sapply(df.filtered,as.numeric))
 #Sum all raw area's under the peak to get a Total Ion Current
 df.filtered$TIC<-apply(df.filtered, 1 ,sum)
 
@@ -32,7 +33,7 @@ TICNORM.smpl<-as.data.frame(TICNORM.smpl)
 rownames(TICNORM.smpl)<-rownames(df.filtered)
 TICNORM.smpl<-TICNORM.smpl[,1:(ncol(TICNORM.smpl)-1)]
 
-write.csv(TICNORM.smpl,"TICNORM.smpl.csv",row.names = TRUE) 
+write.csv(TICNORM.smpl,"TICNORM.smpl.csv",row.names = TRUE)
 
 #create function to transform data by asin of sqare root of the normalized data.
 FUNSQRT<-function(x){
@@ -50,7 +51,7 @@ rownames(ASIN_sqrt_smpl)<-rownames(TICNORM.smpl)
 df.norm.smpl<-ASIN_sqrt_smpl
 df.norm.smpl<-rownames_to_column(df.norm.smpl, "File Name")
 
-write.csv(df.norm.smpl,"df.norm.smpl_no_metadata.csv",row.names = FALSE) 
+write.csv(df.norm.smpl,"df.norm.smpl_no_metadata.csv",row.names = FALSE)
 
 #now create metadata and add to the normalized and transformed data
 if (!exists("full_metadata")){
@@ -58,7 +59,7 @@ if (!exists("full_metadata")){
 df.norm.smpl<-dplyr::right_join(full_metadata, df.norm.smpl, by = "File Name")
 df.norm.smpl<-if_na(df.norm.smpl, "not applicable")
 
-write.csv(df.norm.smpl,"df.norm.smpl.csv",row.names = FALSE) 
+write.csv(df.norm.smpl,"df.norm.smpl.csv",row.names = FALSE)
 
 #number of metadata columns
 M<-ncol(full_metadata)+1

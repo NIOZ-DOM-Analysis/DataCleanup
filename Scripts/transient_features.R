@@ -2,7 +2,7 @@
 
 •	Remove samples transient features.
 •	A transient feature is almost only lower than the set background_noise,
-thus a feature needs to be above the background_noise in more than 3 samples.
+thus a feature needs to be above the background_noise in more than 3 (or W) samples.
 
 
 Written by:
@@ -15,7 +15,11 @@ List of alterations:
 wd.project<-getwd()
 setwd(dirOutput)
 #read in the file of the rawpeaks that had the background features removed
+if (exists("df1.filtered_noblanks")){
+  df.trans<-df1.filtered_noblanks
+}else{
 df.trans<-read.csv('df1.filtered_noblanks.csv', header = TRUE, row.names = 1)
+}
 
 #create an empty matrix to fill in for every feature in how many samples (count) the area under the peak is higher than the set background noise.
 df.count<-as.data.frame(matrix(ncol=1, nrow = nrow(df.trans)))
@@ -28,7 +32,7 @@ df.filtered<-cbind(df.trans, df.count)
 df.filtered<-rownames_to_column(df.filtered, 'feature')
 
 #we now split the file into the transient features (occuring less than W times) in df.trans (W is the size of the smallest group)
-#and the ones that are above the backgroud noise level more than W times (filtered) 
+#and the ones that are above the backgroud noise level more than W times (filtered)
 df.trans<-dplyr::filter(df.filtered, df.filtered$V1 < W)
 df.trans<-dplyr::select(df.trans, -V1)
 df.filtered<-dplyr::filter(df.filtered, df.filtered$V1 >= W)
@@ -38,8 +42,8 @@ df.trans<-column_to_rownames(df.trans, 'feature')
 df.filtered<-column_to_rownames(df.filtered, 'feature')
 
 
-write.csv(df.trans,"transient.feat_filtered_out.csv",row.names = TRUE) 
-write.csv(df.filtered,"rawpeaks_no-background_no-transientfeat.csv",row.names = TRUE) 
+write.csv(df.trans,"transient.feat_filtered_out.csv",row.names = TRUE)
+write.csv(df.filtered,"rawpeaks_no-background_no-transientfeat.csv",row.names = TRUE)
 
 analysis_info$nr_transient_features_removed<-nrow(df.trans)
 
@@ -54,11 +58,11 @@ df.area.no.meta<-df.area
 
 #create metadata and add.
 if (!exists("full_metadata")){
-  full_metadata<-dplyr::left_join(orbitrapsequence, metadata, by = "Sample Name")}
+  full_metadata<-dplyr::right_join(orbitrapsequence, metadata, by = "Sample Name")}
 df.area<-dplyr::right_join(full_metadata, df.area, by = "File Name")
 df.area<-if_na(df.area, "not applicable")
 
-write.csv(df.area,"df.area.csv",row.names = FALSE) 
-write.csv(df.area.no.meta,"df.area_no.metadata.csv",row.names = FALSE) 
+write.csv(df.area,"df.area.csv",row.names = FALSE)
+write.csv(df.area.no.meta,"df.area_no.metadata.csv",row.names = FALSE)
 
 setwd(wd.project)

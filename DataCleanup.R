@@ -2,14 +2,17 @@
 ####                    USER DEFINED INPUT                   ####
 #################################################################
 
+#Which MZmine version did you use?
+Mzmine<-3
+
 #Define if you your GNPS network was "Classic" or  "FBMN" or "IIN" (ion identity networking)
-networking.type <- "IIN"
+networking.type <- "FBMN"
 #Did you run MolNetEnhancer
-MolNetEnh <- "YES"
+MolNetEnh <- "NO"
 #Did you run Dereplicator separately?
-Dereplicator <- "YES"
+Dereplicator <- "NO"
 #Did you run Dereplicator+?
-Dereplicator_plus <- "YES"
+Dereplicator_plus <- "NO"
 
 # #if you want to update your R, R studio you have to do by hand.
 # source(paste0(Data.cleanup.scripts, '/updateR.R'))
@@ -36,18 +39,22 @@ set.seed(25)
 # source(paste0(Data.cleanup.scripts,'/read_prep_rawfiles.R'))
 # toc()
 
-tic()
-source(paste0(Data.cleanup.scripts,'/read_prep_rawfiles_with_analog_folder_2021.R'))
-toc()
+# tic()
+# source(paste0(Data.cleanup.scripts,'/read_prep_rawfiles_with_analog_folder_2021.R'))
+# toc()
 
 tic()
-source(paste0(Data.cleanup.scripts,'/Elemental_formula_parsing.R'))
+source(paste0(Data.cleanup.scripts,'/read_prep_rawfiles_with_mzmine3.R'))
 toc()
 
-tic()
-#compare gapfilled and non-gapfilled data to determine background noise
-source(paste0(Data.cleanup.scripts,'/compare_gapfilled_non-gapfilled.R'))
-toc()
+# tic()
+# source(paste0(Data.cleanup.scripts,'/Elemental_formula_parsing.R'))
+# toc()
+
+# tic()
+# #compare gapfilled and non-gapfilled data to determine background noise
+# source(paste0(Data.cleanup.scripts,'/compare_gapfilled_non-gapfilled.R'))
+# toc()
 
 
 #################################################################
@@ -95,10 +102,10 @@ print(head(split_pregap))
 #now set the background noise based on the pregap value in the first row
 #(this is the first value that is not 0) before gapfilling.
 
-background_noise <- 372460
+background_noise <- 2e5
 
 #of how many samples does the smallest group consist?
-W<-2 #this will be the minimum for transient_feature removal
+W<-3 #this will be the minimum for transient_feature removal
 
 #################################################################
 ####               END OF USER Required action               ####
@@ -131,5 +138,6 @@ toc()
 #################################################################
 
 #write data clean report
-read.data_report<-(paste0(Data.cleanup.scripts,"\\data_report.Rmd"))
-rmarkdown::render(read.data_report, output_dir = dirDoc, output_format = "all")
+read.data_report<-(paste0(Data.cleanup.scripts,"/data_report.Rmd"))
+rmarkdown::render(read.data_report, output_dir = dirDoc, output_format = "html_document")
+rmarkdown::rend

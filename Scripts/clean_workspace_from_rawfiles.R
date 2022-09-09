@@ -16,6 +16,7 @@ analysis_info$nr_selected_runs<-sum(!is.na(df1$Injection_Type))
 analysis_info$nr_analog_hits<-nrow(analogs_hits)
 analysis_info$nr_library_hits<-nrow(library_hits)
 analysis_info$Rstudio<-unlist(RStudio.Version()[3])
+analysis_info$Mzmineversion<-Mzmine
 
 rm(rawpeakareas)
 rm(PREgapfilled)

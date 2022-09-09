@@ -13,8 +13,8 @@ wd.project<-getwd()
 setwd(dirOutput)
 
 #create backup of your data, although this should be the same as "rawpeaks_no-background_no-transientfeat.csv"
-if (!exists("df1.trans.feat")){
-        df1.trans.feat<-df.filtered
+if (exists("df1.trans.feat")){
+    df.filtered<-df1.trans.feat
         analysis_info$normalization<-"normalized by $log10(peak area)$ transformation"
         analysis_info$normalization_zeroes_replaced_by<-zeroes
 } else { df.filtered<-read.csv("rawpeaks_no-background_no-transientfeat.csv", row.names = 1)
@@ -22,6 +22,7 @@ if (!exists("df1.trans.feat")){
         analysis_info$normalization_2_zeroes_replaced_by<-zeroes }
 
 df.filtered<-as.data.frame(t(df.filtered))
+df.filtered<-as.data.frame(sapply(df.filtered,as.numeric))
 
 #Normalize by log 10 transformation
 #define function

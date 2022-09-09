@@ -94,6 +94,7 @@ df1.filtered<-as.data.frame(t(df1.filtered))
 setwd(wd.project)
 setwd(dirOutput)
 write.csv(df1.filtered,"rawpeaks_no-background.csv",row.names = TRUE)
+write.csv(flagged, "removed_contaminants.csv", row.names = TRUE)
 setwd(wd.project)
 
 #save again some info in the analysis info
