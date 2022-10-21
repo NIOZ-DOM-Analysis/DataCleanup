@@ -33,7 +33,7 @@ package_list <- c(
   "broom",
   "readxl",
   "multcomp",
-  "summarytools",
+  # "summarytools",
   "scales",
   "reshape",
   "reshape2",

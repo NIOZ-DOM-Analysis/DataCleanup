@@ -23,6 +23,7 @@ if (exists("df1.trans.feat")){
 
 df.filtered<-as.data.frame(t(df.filtered))
 df.filtered<-as.data.frame(sapply(df.filtered,as.numeric))
+rownames(df.filtered)<-colnames(df1.trans.feat)
 
 #Normalize by log 10 transformation
 #define function

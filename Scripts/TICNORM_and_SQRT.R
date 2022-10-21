@@ -9,14 +9,16 @@ Milou Arts, NIOZ, NL, 2019
 List of alterations:
 
 '
-wd.project <- getwd()
+
 analysis_info$normalization<-"relativized by the total ion current of each sample followed by $asin(sqrt(x))$ normalization."
 setwd(dirOutput)
 df1.trans.feat<-df.filtered #create backup of your data, although this should be the same as "rawpeaks_no-background_no-transientfeat.csv"
 df.filtered<-as.data.frame(t(df.filtered))
+
 df.filtered<-as.data.frame(sapply(df.filtered,as.numeric))
 #Sum all raw area's under the peak to get a Total Ion Current
 df.filtered$TIC<-apply(df.filtered, 1 ,sum)
+rownames(df.filtered)<-colnames(df1.trans.feat)
 
 #Normalize by TIC (area under the peak/TIC)
 #define function

@@ -53,6 +53,7 @@ rm(flagging, blanks, samples)
 
 #combine filtered data with metadata to create df.area but also save one without metadata but with samples in rows.
 df.area<-as.data.frame(t(df.filtered))
+df.area <- df.area %>% mutate_if(is.character, as.numeric)
 df.area<-rownames_to_column(df.area, var = "File Name")
 df.area.no.meta<-df.area
 

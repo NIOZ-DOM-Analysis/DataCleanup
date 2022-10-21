@@ -14,11 +14,24 @@ wd.project<-getwd()
 setwd(dirRAW) # set wd to raw folder to read in files
 
 orbitrapsequence <- read_csv("orbitrapsequence.csv")
+
+if("File Name" %in% colnames(orbitrapsequence) &
+   "Sample Name" %in% colnames(orbitrapsequence) &
+   "Injection_Type" %in% colnames(orbitrapsequence)){
+  print("orbitrapsequence file correct")
+}else{
+  stop("Wrong column names in orbitrapsequense.csv")}
+
 rawpeakareas <- read_csv("POSTgapfilled.csv")
 PREgapfilled <- read_csv("PREgapfilled.csv")
 metadata <- read_csv("metadata.csv")
+if( "Sample Name" %in% colnames(metadata) ){
+  print("metadatasheet accepted")
+}else{
+  stop("No column with \"Sample Name\" as columnname. check metadata.csv ")}
 
 setwd(wd.project)
+
 # load in files from Cytoscape based on the type of networking
 if (networking.type == "FBMN") {
   dir_library_hits <- paste0(dir_analogs_on, '/DB_result')
@@ -124,7 +137,7 @@ colnames(rawpeakareas) <- tmp[1, ]
 
 rawpeakareas <-
   rawpeakareas %>% select(
-    -"row ion mobility",
+    - "row ion mobility",
     - "row ion mobility unit",
     - "row CCS",
     - "correlation group ID" ,
@@ -153,53 +166,51 @@ rawpeakareas <- subset(rawpeakareas, select = -c(temp))
 rawpeakareas <- dplyr::rename(rawpeakareas, "feature_nr" = "row ID")
 
 
-# ##  Do the same with the pregapfilled file
-# # remove the .mzXML.Peak.area string from the filenames
-# # remove the .mzML.Peak.area string from the filenames
-# temp <-
-#   as.character(colnames(PREgapfilled)) #move column headers to temp
-# tmp <-
-#   as.data.frame(matrix(ncol = ncol(PREgapfilled), nrow = 1))#make dataframe to store colnames in
-# tmp[1, ] <- sub(".mzXML Peak area", "", temp)  #change temp by removing .mzXML.Peak area in insert in rawpeakareas
-# tmp[1, ] <- sub(".mzML Peak area", "", tmp)  #change temp by removing .mzML.Peak area in insert in rawpeakareas
-#
-# colnames(PREgapfilled) <- tmp[1, ]
-#
-# # if there is an extra empty column imported, that we don't need now.
-# # there are standard 12 columns imported that we don't want.
-# # I'm going to delete them by name, to be sure that if in the future column names change we catch it and not accedentally remove the first samples.
-#
-# PREgapfilled <-
-#   PREgapfilled %>% select(
-#     -"row identity (main ID)",
-#     - "row identity (all IDs)",
-#     - "row identity (main ID + details)",
-#     - "row comment",
-#     - "row number of detected peaks",
-#     - "correlation group ID" ,
-#     - "annotation network number",
-#     - "best ion",
-#     - "auto MS2 verify",
-#     - "identified by n=",
-#     - "partners",
-#     - "neutral M mass"
-#   )
-#
-# # if there is still an extra empty column imported, it will be full of NA and we want to remove it
-# temp <- c()
-#
-# for (i in 1:(ncol(PREgapfilled))) {
-#   if (all(is.na(PREgapfilled[1:5, i])))
-#   {
-#     y <- i
-#     temp <- c(temp, y)
-#   }
-# }
-# PREgapfilled <- subset(PREgapfilled, select = -c(temp))
-#
-# # rename the naming of feature number
-# PREgapfilled <- dplyr::rename(PREgapfilled, "feature_nr" = 'row ID')
-#
+##  Do the same with the pregapfilled file
+# remove the .mzXML.Peak.area string from the filenames
+# remove the .mzML.Peak.area string from the filenames
+temp <-
+  as.character(colnames(PREgapfilled)) #move column headers to temp
+tmp <-
+  as.data.frame(matrix(ncol = ncol(PREgapfilled), nrow = 1))#make dataframe to store colnames in
+tmp[1, ] <- sub(".mzXML Peak area", "", temp)  #change temp by removing .mzXML.Peak area in insert in rawpeakareas
+tmp[1, ] <- sub(".mzML Peak area", "", tmp)  #change temp by removing .mzML.Peak area in insert in rawpeakareas
+
+colnames(PREgapfilled) <- tmp[1, ]
+
+# if there is an extra empty column imported, that we don't need now.
+# there are standard 12 columns imported that we don't want.
+# I'm going to delete them by name, to be sure that if in the future column names change we catch it and not accedentally remove the first samples.
+
+PREgapfilled <-
+  PREgapfilled %>% select(
+    - "row ion mobility",
+    - "row ion mobility unit",
+    - "row CCS",
+    - "correlation group ID" ,
+    - "annotation network number",
+    - "best ion",
+    - "auto MS2 verify",
+    - "identified by n=",
+    - "partners",
+    - "neutral M mass"
+  )
+
+# if there is still an extra empty column imported, it will be full of NA and we want to remove it
+temp <- c()
+
+for (i in 1:(ncol(PREgapfilled))) {
+  if (all(is.na(PREgapfilled[1:5, i])))
+  {
+    y <- i
+    temp <- c(temp, y)
+  }
+}
+PREgapfilled <- subset(PREgapfilled, select = -c(temp))
+
+# rename the naming of feature number
+PREgapfilled <- dplyr::rename(PREgapfilled, "feature_nr" = 'row ID')
+
 
 ##### PREP Cytoscape output #####
 # rename the column of feature number/scan nr/clusterindex
@@ -453,39 +464,39 @@ setwd(dirOutput)
 write.csv(df1, "rawpeakareas.csv", row.names = TRUE) #write third version of data, not cleaned
 setwd(wd.project)
 
-# ###### PREGAPFILLED combined with metadata etc.
-#
-# # make a new df with combined names
-#
-# class(df.featureID$feature_nr) <- "character"
-# class(PREgapfilled$feature_nr) <- "character"
-# tmp <- select(df.featureID, feature_nr, featureID)
-# tmp2 <- cbind(PREgapfilled[, 1], PREgapfilled[, 5:ncol(PREgapfilled)])
-# df.pregap <- left_join(tmp, tmp2, by = "feature_nr")
-# df.pregap <- t(df.pregap)
-# df.pregap <- as.data.frame(df.pregap)
-#
-# # let's make a safe file for in between
-# # setwd(dirOutput) #set wd to output
-# # write.csv(df.pregap,"pregapfilling_V1.csv",row.names = TRUE) #write first version of data, not cleaned
-#
-# # we name the columns and the rows by naming columns and transposing
-# colnames(df.pregap) <- as.character(unlist(df.pregap[2, ]))
-# df.pregap <- df.pregap[-2, ]
-# df.pregap <- df.pregap[-1, ]
-# # write.csv(df.pregap,"pregapfilling_V2.csv",row.names = TRUE) #write second version of data, not cleaned
-#
-#
-# # combine rawpeakareas with orbitrap sequence
-# shared.name <- as.data.frame(rownames(df.pregap))
-# colnames(shared.name) <- 'File Name'
-# df.pregap <- cbind(shared.name, df.pregap)
-# df1.pregap <-
-#   right_join(orbitrapsequence, df.pregap, by = "File Name") #join matching info from orbitrap sequence
-# setwd(wd.project)
-# setwd(dirOutput)
-# write.csv(df1.pregap, "pregapfilling.csv", row.names = TRUE) #write third version of data, not cleaned
-# setwd(wd.project)
-#
-# if (exists("sirius_files")) {
-# rm(sirius_files)}
+###### PREGAPFILLED combined with metadata etc.
+
+# make a new df with combined names
+
+class(df.featureID$feature_nr) <- "character"
+class(PREgapfilled$feature_nr) <- "character"
+tmp <- select(df.featureID, feature_nr, featureID)
+tmp2 <- cbind(PREgapfilled[, 1], PREgapfilled[, 4:ncol(PREgapfilled)])
+df.pregap <- left_join(tmp, tmp2, by = "feature_nr")
+df.pregap <- t(df.pregap)
+df.pregap <- as.data.frame(df.pregap)
+
+# let's make a safe file for in between
+# setwd(dirOutput) #set wd to output
+# write.csv(df.pregap,"pregapfilling_V1.csv",row.names = TRUE) #write first version of data, not cleaned
+
+# we name the columns and the rows by naming columns and transposing
+colnames(df.pregap) <- as.character(unlist(df.pregap[2, ]))
+df.pregap <- df.pregap[-2, ]
+df.pregap <- df.pregap[-1, ]
+# write.csv(df.pregap,"pregapfilling_V2.csv",row.names = TRUE) #write second version of data, not cleaned
+
+
+# combine rawpeakareas with orbitrap sequence
+shared.name <- as.data.frame(rownames(df.pregap))
+colnames(shared.name) <- 'File Name'
+df.pregap <- cbind(shared.name, df.pregap)
+df1.pregap <-
+  right_join(orbitrapsequence, df.pregap, by = "File Name") #join matching info from orbitrap sequence
+setwd(wd.project)
+setwd(dirOutput)
+write.csv(df1.pregap, "pregapfilling.csv", row.names = TRUE) #write third version of data, not cleaned
+setwd(wd.project)
+
+if (exists("sirius_files")) {
+rm(sirius_files)}
