@@ -2,6 +2,7 @@
 
 Goal: load rawfiles and prep them for normalisation and transformations
 
+Used on a macbook, so fileformats are with / ; it can be that you have to change all path formats to \\
 
 Written by:
 Milou Arts, NIOZ, NL, 2019
@@ -20,43 +21,43 @@ metadata <- read_csv("metadata.csv")
 setwd(wd.project)
 # load in files from Cytoscape based on the type of networking
 if (networking.type == "FBMN") {
-  dir_library_hits <- paste0(dir_analogs_on, '\\DB_result')
+  dir_library_hits <- paste0(dir_analogs_on, '/DB_result')
   dir_analogs_hits <- paste0(dir_analogs_on)
-  dir_node_info <- paste0(dir_analogs_on, '\\clusterinfo_summary')
+  dir_node_info <- paste0(dir_analogs_on, '/clusterinfo_summary')
 }
 
 if (networking.type == "IIN") {
-  dir_library_hits <- paste0(dir_analogs_on, '\\DB_result')
+  dir_library_hits <- paste0(dir_analogs_on, '/DB_result')
   dir_analogs_hits <- paste0(dir_analogs_on)
-  dir_node_info <- paste0(dir_analogs_on, '\\clusterinfo_summary')
+  dir_node_info <- paste0(dir_analogs_on, '/clusterinfo_summary')
 }
 
 if (networking.type == "Classic") {
-  dir_library_hits <- paste0(dir_analogs_off, '\\result_specnets_DB')
-  dir_analogs_hits <- paste0(dir_analogs_on, '\\result_specnets_DB')
-  dir_node_info <- paste0(dir_analogs_on, '\\clusterinfo_summary')
+  dir_library_hits <- paste0(dir_analogs_off, '/result_specnets_DB')
+  dir_analogs_hits <- paste0(dir_analogs_on, '/result_specnets_DB')
+  dir_node_info <- paste0(dir_analogs_on, '/clusterinfo_summary')
 }
 
 if (MolNetEnh == "YES") {
-  dir_library_hits <- paste0(dirCyto, '\\MolNetEnhancer\\DB_result')
+  dir_library_hits <- paste0(dirCyto, '/MolNetEnhancer/DB_result')
   dir_ClassyFire_hits <-
-    paste0(dirCyto, '\\MolNetEnhancer\\output_network')
+    paste0(dirCyto, '/MolNetEnhancer/output_network')
   ClassyFire_hits <-
-    read_tsv(paste0(dir_ClassyFire_hits, "\\ClassyFireResults_Network.txt"))
+    read_tsv(paste0(dir_ClassyFire_hits, "/ClassyFireResults_Network.txt"))
   dir_node_info <-
-    paste0(dirCyto, '\\MolNetEnhancer\\clusterinfo_summary')
+    paste0(dirCyto, '/MolNetEnhancer/clusterinfo_summary')
 }
 
 if (Dereplicator == "YES" & MolNetEnh == "YES") {
-  dir_derep <- paste0(dirCyto, '\\MolNetEnhancer\\Derep_output')
+  dir_derep <- paste0(dirCyto, '/MolNetEnhancer/Derep_output')
 }
 if (Dereplicator == "YES" &
     (MolNetEnh != "YES" | !exists("MolNetEnh"))) {
-  dir_derep <- paste0(dirCyto, '\\Dereplicator')
+  dir_derep <- paste0(dirCyto, '/Dereplicator')
 }
 
 if (Dereplicator_plus == "YES") {
-  dir_derepplus <- paste0(dirCyto, '\\Dereplicator-Plus')
+  dir_derepplus <- paste0(dirCyto, '/Dereplicator-Plus')
   setwd(dir_derepplus)
   temp <- list.files(pattern = "*.tsv")
   derep_plus_hits <- read_tsv(temp)
@@ -121,21 +122,18 @@ colnames(rawpeakareas) <- tmp[1, ]
 # I'm going to delete them by name, to be sure that if in the future column names change we catch it and not accedentally remove the first samples.
 
 rawpeakareas <-
-  rawpeakareas %>% select(
-    -"row identity (main ID)",
-    - "row identity (all IDs)",
-    - "row identity (main ID + details)",
-    - "row comment",
-    - "row number of detected peaks",
-    - "correlation group ID" ,
-    - "annotation network number",
-    - "best ion",
-    - "auto MS2 verify",
-    - "identified by n=",
-    - "partners",
-    - "neutral M mass"
-  )
-
+  rawpeakareas %>% select(-any_of(c("row identity (main ID)",
+                                  "row identity (all IDs)",
+                                  "row identity (main ID + details)",
+                                  "row comment",
+                                  "row number of detected peaks",
+                                  "correlation group ID" ,
+                                  "annotation network number",
+                                  "best ion",
+                                  "auto MS2 verify",
+                                  "identified by n=",
+                                  "partners",
+                                  "neutral M mass")))
 
 # if there are other columns with NA's that we also want to remove now, therefore we loop through the first 5 lines to find all columns with NA
 temp <- c()
@@ -170,20 +168,19 @@ colnames(PREgapfilled) <- tmp[1, ]
 # I'm going to delete them by name, to be sure that if in the future column names change we catch it and not accedentally remove the first samples.
 
 PREgapfilled <-
-  PREgapfilled %>% select(
-    -"row identity (main ID)",
-    - "row identity (all IDs)",
-    - "row identity (main ID + details)",
-    - "row comment",
-    - "row number of detected peaks",
-    - "correlation group ID" ,
-    - "annotation network number",
-    - "best ion",
-    - "auto MS2 verify",
-    - "identified by n=",
-    - "partners",
-    - "neutral M mass"
-  )
+  PREgapfilled %>% select(-any_of(c("row identity (main ID)",
+                                    "row identity (all IDs)",
+                                    "row identity (main ID + details)",
+                                    "row comment",
+                                    "row number of detected peaks",
+                                    "correlation group ID" ,
+                                    "annotation network number",
+                                    "best ion",
+                                    "auto MS2 verify",
+                                    "identified by n=",
+                                    "partners",
+                                    "neutral M mass")))
+
 
 # if there is still an extra empty column imported, it will be full of NA and we want to remove it
 temp <- c()
@@ -231,13 +228,13 @@ colnames(analogs_hits)[tmp] <- "Analog_LibraryID"
 if (exists("derep_hits")) {
   tmp <- which(colnames(derep_hits) == "Scan")
   colnames(derep_hits)[tmp] <- "feature_nr"
-  
+
 }
 
 if (exists("derep_plus_hits")) {
   tmp <- which(colnames(derep_plus_hits) == "Scan")
   colnames(derep_plus_hits)[tmp] <- "feature_nr"
-  
+
 }
 
 if (exists("ClassyFire_hits")) {
@@ -263,15 +260,15 @@ derep_plus_hits$Name <-
 
 
 # in case you  have more problems with the compound names.
-# library_hits$Compound_Name<-gsub("\\[", "_", library_hits$Compound_Name)
-# library_hits$Compound_Name<-gsub("\\]", "_", library_hits$Compound_Name)
-# library_hits$Compound_Name<-gsub("\\(", "_", library_hits$Compound_Name)
-# library_hits$Compound_Name<-gsub("\\)", "_", library_hits$Compound_Name)
+# library_hits$Compound_Name<-gsub("/[", "_", library_hits$Compound_Name)
+# library_hits$Compound_Name<-gsub("/]", "_", library_hits$Compound_Name)
+# library_hits$Compound_Name<-gsub("/(", "_", library_hits$Compound_Name)
+# library_hits$Compound_Name<-gsub("/)", "_", library_hits$Compound_Name)
 
-# analogs_hits$Analog_LibraryID<-gsub("\\[", "_", analogs_hits$Analog_LibraryID)
-# analogs_hits$Analog_LibraryID<-gsub("\\]", "_", analogs_hits$Analog_LibraryID)
-# analogs_hits$Analog_LibraryID<-gsub("\\(", "_", analogs_hits$Analog_LibraryID)
-# analogs_hits$Analog_LibraryID<-gsub("\\)", "_", analogs_hits$Analog_LibraryID)
+# analogs_hits$Analog_LibraryID<-gsub("/[", "_", analogs_hits$Analog_LibraryID)
+# analogs_hits$Analog_LibraryID<-gsub("/]", "_", analogs_hits$Analog_LibraryID)
+# analogs_hits$Analog_LibraryID<-gsub("/(", "_", analogs_hits$Analog_LibraryID)
+# analogs_hits$Analog_LibraryID<-gsub("/)", "_", analogs_hits$Analog_LibraryID)
 
 
 

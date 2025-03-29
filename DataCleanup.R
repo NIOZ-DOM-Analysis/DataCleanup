@@ -33,28 +33,22 @@ source(paste0(Data.cleanup.scripts,'/packages.R'))
 set.seed(25)
 
 #prep the rawfiles for cleanup but select the one that fits your Cytoscape output.
-# output after 2021 have a seperate analog folder, instead of having to download those results seperately
+# output after 2021 have a separate analog folder, instead of having to download those results seperately
 # the old option will be deprecated
-# tic()
+
+# for no analogs data folder use:
 # source(paste0(Data.cleanup.scripts,'/read_prep_rawfiles.R'))
-# toc()
-
-# tic()
+# # OR
 # source(paste0(Data.cleanup.scripts,'/read_prep_rawfiles_with_analog_folder_2021.R'))
-# toc()
 
-tic()
+# You probably need
 source(paste0(Data.cleanup.scripts,'/read_prep_rawfiles_with_mzmine3.R'))
-toc()
 
-# tic()
-# source(paste0(Data.cleanup.scripts,'/Elemental_formula_parsing.R'))
-# toc()
+source(paste0(Data.cleanup.scripts,'/Elemental_formula_parsing.R'))
 
-tic()
 #compare gapfilled and non-gapfilled data to determine background noise
  source(paste0(Data.cleanup.scripts,'/compare_gapfilled_non-gapfilled.R'))
-toc()
+
 
 
 #################################################################
@@ -72,25 +66,22 @@ samples2delete<- NA
 #################################################################
 ####               END OF USER Required action               ####
 #################################################################
-tic()
+
 source(paste0(Data.cleanup.scripts,'/clean_workspace_from_rawfiles.R'))
-toc()
+
 
 #clean your MS1 data
-tic()
+
 #option 1: clean based on average in all samples - environmental samples
 source(paste0(Data.cleanup.scripts,'/flagging_average_all_samples.R'))
-toc()
+
 
 #option 2: clean based on area in all samples separate - time series
-#tic()
 #source(paste0(Data.cleanup.scripts,'/flagging_per_sample.R')
-#toc()
+
 
 #remove blanks
-tic()
 source(paste0(Data.cleanup.scripts,'/remove_blanks.R'))
-toc()
 
 
 #################################################################
@@ -110,27 +101,19 @@ W<-2 #this will be the minimum for transient_feature removal
 #################################################################
 ####               END OF USER Required action               ####
 #################################################################
-tic()
 source(paste0(Data.cleanup.scripts,'/transient_features.R'))
-toc()
 
 #normalize by TIC and transform sqrt by sample
-#tic()
 source(paste0(Data.cleanup.scripts,'/TICNORM_and_SQRT.R'))
-#toc()
 
 #normalize by TIC and transform sqrt by feature
-#tic()
 #source(paste0(Data.cleanup.scripts,'/TICNORM_and_SQRT_by_FEATURE.R'))
-#toc()
 
 #should your 0's in the dataset be replaced by something? (1000 = 3, 1 = 0)
 zeroes<-1000
 
 #or transform XIC by log 10
-tic()
 source(paste0(Data.cleanup.scripts,'/LOGNORM.R'))
-toc()
 
 
 #################################################################
